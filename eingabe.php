@@ -6,5 +6,5 @@ if(isset($_SESSION['eingabe'])) {
 ?>
 <form name="eingabe" method="post">
     <textarea name="eingabe"><?php echo $eingabe ?></textarea>
-    <button type="submit">Text einlesen</button>
+    <button type="submit">Hauptwörter identifizieren</button>
 </form>

@@ -11,14 +11,19 @@
 
         session_start();
 
-        if (isset($_POST['eingabe'])) {
-            require_once("verarbeitung.php");
-            require_once("auswahl.php");
-        } elseif(isset($_POST['auswahl'])) {
-            require_once("verarbeitung.php");
-            require_once("ausgabe.php");
-        } else {
-            require_once("eingabe.php");
+        try {
+            if (isset($_POST['eingabe'])) {
+                require_once("verarbeitung.php");
+                require_once("auswahl.php");
+            } elseif (isset($_POST['auswahl'])) {
+                require_once("verarbeitung.php");
+                require_once("ausgabe.php");
+            } else {
+                require_once("eingabe.php");
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            echo "<br /><a href='{$_SERVER['REQUEST_URI']}'>Zurück zum Start</a>";
         }
 
         ?>

@@ -8,10 +8,13 @@ function getSynonymeFromWebService($wort) {
     $wortEncoded = urlencode($wort);
     $response = file_get_contents("https://www.openthesaurus.de/synonyme/search?q={$wortEncoded}%20&format=application/json");
     $synonymeFromService = json_decode($response, true);
+    $synonymeSets = $synonymeFromService['synsets'];
     $synonyme = [];
-    array_walk($synonymeFromService['synsets'][0]['terms'], function ($value, $key) use (&$synonyme) {
-        array_push($synonyme, $value['term']);
-    });
+    if (count($synonymeSets) > 0) {
+        array_walk($synonymeSets[0]['terms'], function ($value, $key) use (&$synonyme) {
+            array_push($synonyme, $value['term']);
+        });
+    }
     return $synonyme;
 }
 
@@ -20,18 +23,24 @@ function getSynonymeFromWebService($wort) {
  * @param string $selectName
  * @return string
  */
-function creaeteSelectForHauptwort(string $hauptwort, string $selectName): string {
-    $ausgabe = "<select name='{$selectName}'>";
-    foreach (getSynonymeFromWebService($hauptwort) as $synonym) {
-        if ($synonym == $hauptwort) {
-            $selected = " selected";
-        } else {
-            $selected = "";
+function createSelectForHauptwort(string $hauptwort, string $selectName): string {
+    $synonyme = getSynonymeFromWebService($hauptwort);
+
+    if(count($synonyme)>0) {
+        $ausgabe = "<select name='{$selectName}'>";
+        foreach ($synonyme as $synonym) {
+            if ($synonym == $hauptwort) {
+                $selected = " selected";
+            } else {
+                $selected = "";
+            }
+            $ausgabe .= "<option value='{$synonym}'{$selected}>$synonym</option > ";
         }
-        $ausgabe .= "<option value='{$synonym}'{$selected}>$synonym</option > ";
+        $ausgabe .= "</select > ";
+    } else {
+        $ausgabe = $hauptwort;
     }
 
-    $ausgabe .= "</select > ";
     return $ausgabe;
 }
 
@@ -61,11 +70,11 @@ function getHauptwortTokensFromText(string $text) {
  */
 function ersetzeHauptwortTokensWithSelects(array $tokens): string {
 
-    $i=0;
+    $i = 0;
     foreach ($tokens as $key => $hauptwortKandidat) {
         $i++;
         if (istHauptwort($hauptwortKandidat)) {
-            $tokens[$key] = creaeteSelectForHauptwort($hauptwortKandidat, $i);
+            $tokens[$key] = createSelectForHauptwort($hauptwortKandidat, $i);
         }
     }
 
@@ -87,7 +96,7 @@ function istHauptwort($hauptwortKandidat): bool {
  * @return array
  */
 function ersetzeHauptwortTokensDurchJeweiligeAuswahl(array $tokens, array $auswahl): array {
-    $i=0;
+    $i = 0;
     foreach ($tokens as $key => $token) {
         $i++;
         if (istHauptwort($token)) {
