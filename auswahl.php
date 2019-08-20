@@ -3,16 +3,15 @@ $eingabe = $_POST['eingabe'];
 
 const EINGABE_MAX_CHARACTERS = 1000;
 
-if(strlen($eingabe)>EINGABE_MAX_CHARACTERS) {
-    throw new Exception("Text darf maximal ".EINGABE_MAX_CHARACTERS. " Zeichen lang sein.");
-}
+/* TODO prüfe die maximale Länge */
 
 if (!$eingabe && isset($_SESSION['eingabe'])) {
     $eingabe = $_SESSION['eingabe'];
 }
 
-$tokens = getTokensFromText($eingabe);
-$auswahlHTML = ersetzeHauptwortTokensWithSelects($tokens);
+/* TODO zerlege Eingabe in Tokens */
+/* TODO ersetze Hauptwort-Tokens durch <select>s */
+
 $_SESSION['eingabe'] = $eingabe;
 $_SESSION['tokens'] = $tokens;
 
@@ -21,5 +20,5 @@ $_SESSION['tokens'] = $tokens;
     <?php echo $auswahlHTML; ?>
     <br /><br />
     <button name="auswahl" type="submit">Auswahl ausgeben</button>
-    <button type="submit" name="reset">Zurück zur Eingabe</button>
+    <button name="reset" type="submit">Zurück zur Eingabe</button>
 </form>

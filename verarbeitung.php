@@ -19,12 +19,12 @@ function getSynonymeFromWebService($wort) {
 }
 
 /**
- * @param string $hauptwort
  * @param string $selectName
+ * @param string $synonyme
+ * @param string $hauptwort
  * @return string
  */
-function createSelectForHauptwort(string $hauptwort, string $selectName): string {
-    $synonyme = getSynonymeFromWebService($hauptwort);
+function createSelect(string $selectName, string $synonyme, string $hauptwort): string {
 
     if(count($synonyme)>0) {
         $ausgabe = "<select name='{$selectName}'>";
@@ -42,74 +42,4 @@ function createSelectForHauptwort(string $hauptwort, string $selectName): string
     }
 
     return $ausgabe;
-}
-
-/**
- * @param $text
- * @return array[]|false|string[]
- */
-function getTokensFromText($text) {
-    $tokens = preg_split("/([.!?, ])/", $text, null, PREG_SPLIT_DELIM_CAPTURE);
-    return $tokens;
-}
-
-/**
- * @param $text
- * @return array|array[]|false|string[]
- */
-function getHauptwortTokensFromText(string $text) {
-    $tokens = getTokensFromText($text);
-    return array_filter($tokens, function ($value) {
-        istHauptwort($value);
-    });
-}
-
-/**
- * @param string[] $text
- * @return string
- */
-function ersetzeHauptwortTokensWithSelects(array $tokens): string {
-
-    $i = 0;
-    foreach ($tokens as $key => $hauptwortKandidat) {
-        $i++;
-        if (istHauptwort($hauptwortKandidat)) {
-            $tokens[$key] = createSelectForHauptwort($hauptwortKandidat, $i);
-        }
-    }
-
-    return implode($tokens);
-}
-
-/**
- * @param $hauptwortKandidat
- * @return bool
- */
-function istHauptwort($hauptwortKandidat): bool {
-    return (strlen($hauptwortKandidat) >= 4) && (ucfirst($hauptwortKandidat) == $hauptwortKandidat);
-}
-
-
-/**
- * @param array $tokens
- * @param $auswahl
- * @return array
- */
-function ersetzeHauptwortTokensDurchJeweiligeAuswahl(array $tokens, array $auswahl): array {
-    $i = 0;
-    foreach ($tokens as $key => $token) {
-        $i++;
-        if (istHauptwort($token)) {
-            $tokens[$key] = $auswahl[$i];
-        }
-    }
-    return $tokens;
-}
-
-/**
- * @param array $tokens
- * @return string
- */
-function tokensToText(array $tokens): string {
-    return implode("", $tokens);
 }
