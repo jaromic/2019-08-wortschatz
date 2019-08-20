@@ -24,7 +24,7 @@ function getSynonymeFromWebService($wort) {
  * @param string $hauptwort
  * @return string
  */
-function createSelect(string $selectName, string $synonyme, string $hauptwort): string {
+function createSelect(string $selectName, array $synonyme, string $hauptwort): string {
 
     if(count($synonyme)>0) {
         $ausgabe = "<select name='{$selectName}'>";
